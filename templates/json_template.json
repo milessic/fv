@@ -1,0 +1,67 @@
+{
+    "headers": {
+        "isMetodaKasowa": true,
+		"isCorrection": false,
+        "invoiceNumber": "FV/2025/001",
+        "paymentMethod": "Przelew bankowy",
+        "paymentTerm": "2025-02-15",
+        "dateOfSales": "2025-01-30",
+        "invoiceDate": "2025-01-31",
+        "bankAccountNumber": "12345678901234567890123456"
+    },
+    "recipients": {
+        "from": {
+            "name": "Firma XYZ Sp. z o.o.",
+            "addressStreet": "ul. Przykładowa 1",
+            "addressCity": "00-000 Warszawa",
+            "addressCountry": "Polska",
+            "nip": "123-456-78-90",
+            "regon": "987654321",
+            "krs": "0000123456"
+        },
+        "to": {
+            "name": "ABC S.A.",
+            "addressStreet": "ul. Klientowska 2",
+            "addressCity": "00-111 Kraków",
+            "addressCountry": "Polska",
+            "nip": "098-765-43-21",
+            "regon": "123456789",
+            "krs": "0000654321"
+        }
+    },
+    "invoiceItems": [
+        {
+            "itemNumber": "1",
+            "itemDescription": "Usługa konsultingowa",
+            "pkwiuCode": "85.60.10.0",
+            "quantity": 2,
+            "unit": "godzina",
+            "unitNetPrice": 250.00,
+            "vatRatePercent": 23
+        },
+        {
+            "itemNumber": "2",
+            "itemDescription": "Oprogramowanie",
+            "pkwiuCode": "58.29.29.0",
+            "quantity": 1,
+            "unit": "sztuka",
+            "unitNetPrice": 5000.00,
+            "vatRatePercent": 23
+        }
+    ],
+    "summary": {
+        "netValue": 5500.00,
+        "vatValue": 1265.00,
+        "grossValue": 6765.00,
+        "totalInWords": "Sześć tysięcy siedemset sześćdziesiąt pięć złotych 00/100"
+    },
+	"correction": {
+		"reason": null,
+		"correctedDocument": null
+	},
+    "footer": {
+        "authorizedPerson": "Jan Kowalski",
+        "note": "Dziękujemy za współpracę!"
+    }
+}
+

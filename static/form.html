@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Faktur</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        label { font-weight: bold; display: block; margin-top: 10px; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        button { margin-top: 10px; padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Generator Faktur</h2>
+        
+        <label>Numer faktury</label>
+        <input type="text" id="invoiceNumber">
+        
+        <label>Data sprzedaży</label>
+        <input type="date" id="dateOfSales">
+        
+        <label>Termin płatności</label>
+        <input type="date" id="paymentTerm">
+        
+        <h3>Pozycje faktury</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nazwa</th>
+                    <th>PKWiU</th>
+                    <th>Ilość</th>
+                    <th>Jednostka</th>
+                    <th>Cena netto</th>
+                    <th>VAT %</th>
+                    <th>Usuń</th>
+                </tr>
+            </thead>
+            <tbody id="itemsTable">
+            </tbody>
+        </table>
+        <button onclick="addItem()">Dodaj pozycję</button>
+        
+        <button onclick="generateJSON()">Generuj JSON</button>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        let itemIndex = 1;
+        
+        function addItem() {
+            const table = document.getElementById("itemsTable");
+            const row = table.insertRow();
+            row.innerHTML = `
+                <td>${itemIndex}</td>
+                <td><input type="text" class="itemDescription"></td>
+                <td><input type="text" class="pkwiuCode"></td>
+                <td><input type="number" class="quantity" value="1"></td>
+                <td><input type="text" class="unit"></td>
+                <td><input type="number" class="unitNetPrice" step="0.01"></td>
+                <td><input type="number" class="vatRatePercent" value="23"></td>
+                <td><button onclick="removeItem(this)">❌</button></td>
+            `;
+            itemIndex++;
+        }
+        
+        function removeItem(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+        
+        function generateJSON() {
+            const invoiceData = {
+                headers: {
+                    invoiceNumber: document.getElementById("invoiceNumber").value,
+                    dateOfSales: document.getElementById("dateOfSales").value,
+                    paymentTerm: document.getElementById("paymentTerm").value,
+                    paymentMethod: "Przelew bankowy", 
+                    bankAccountNumber: "12345678901234567890123456"
+                },
+                items: []
+            };
+
+            document.querySelectorAll("#itemsTable tr").forEach((row, index) => {
+                const inputs = row.querySelectorAll("input");
+                invoiceData.items.push({
+                    itemNumber: (index + 1).toString(),
+                    itemDescription: inputs[0].value,
+                    pkwiuCode: inputs[1].value,
+                    quantity: parseInt(inputs[2].value),
+                    unit: inputs[3].value,
+                    unitNetPrice: parseFloat(inputs[4].value),
+                    vatRatePercent: parseInt(inputs[5].value)
+                });
+            });
+
+            document.getElementById("output").textContent = JSON.stringify(invoiceData, null, 4);
+        }
+    </script>
+</body>
+</html>
+
