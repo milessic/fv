@@ -1,5 +1,5 @@
 ## Usage
-tbd
+Project to generate invoices along with web interface.
 
 ## Environment Setup
 1. Install ``requirements.txt`` using ``pip install -r requirements.txt``
