@@ -207,8 +207,6 @@
 			<a href="https://github.com/milessic/fv" target="blank">fv on GitHub</a>
 		</footer>
 <script>
-	let itemIndex = 1;
-
 	document.getElementById("isCorrection").addEventListener("click", handleCorrection)
 	document.getElementById("paymentMethod").addEventListener("change", handlePaymentMethod)
 	function handlePaymentMethod(){
@@ -231,22 +229,32 @@
 	function addItem() {
 		const table = document.getElementById("itemsTable");
 		const row = table.insertRow();
+		row.classList.add("row");
 		row.innerHTML = `
-			<td>${itemIndex}</td>
+			<td class="row-index"></td>
 			<td><input type="text" class="itemDescription"></td>
 			<td><input type="text" class="pkwiuCode"></td>
-			<td><input type="number" class="quantity" value="1"></td>
+			<td><input type="number" class="quantity" value="1" min="0"></td>
 			<td><input type="text" class="unit"></td>
-			<td><input type="number" class="unitNetPrice" step="0.01"></td>
-			<td><input type="number" class="vatRatePercent" value="23"></td>
+			<td><input type="number" class="unitNetPrice" step="0.01" min="0"></td>
+			<td><input type="number" class="vatRatePercent" value="23" min="0"></td>
 			<td><button onclick="removeItem(this)">❌</button></td>
 		`;
-		itemIndex++;
+		setRowIndexes();
+
 	}
 	
+	function setRowIndexes(){
+		const allRows = document.querySelectorAll(".row");
+		console.log(allRows);
+		for ( let i = 0; i < allRows.length; i++){
+			allRows[i].querySelector(".row-index").innerText = i+1;
+		}
+	}
 	function removeItem(button) {
 		const row = button.parentNode.parentNode;
 		row.parentNode.removeChild(row);
+		setRowIndexes();
 	}
 	
 	function generateJSON() {
