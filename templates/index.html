@@ -232,12 +232,12 @@
 		row.classList.add("row");
 		row.innerHTML = `
 			<td class="row-index"></td>
-			<td><input type="text" class="itemDescription"></td>
+			<td class="required"><input type="text" class="itemDescription"></td>
 			<td><input type="text" class="pkwiuCode"></td>
-			<td><input type="number" class="quantity" value="1" min="0"></td>
-			<td><input type="text" class="unit"></td>
-			<td><input type="number" class="unitNetPrice" step="0.01" min="0"></td>
-			<td><input type="number" class="vatRatePercent" value="23" min="0"></td>
+			<td class="required"><input type="number" class="quantity" value="1" min="0"></td>
+			<td class="required"><input type="text" class="unit"></td>
+			<td class="required"><input type="number" class="unitNetPrice" step="0.01" min="0"></td>
+			<td class="required"><input type="number" class="vatRatePercent" value="23" min="0"></td>
 			<td><button onclick="removeItem(this)">❌</button></td>
 		`;
 		setRowIndexes();
