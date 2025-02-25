@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator Faktur</title>
+    <title>Generator Faktur VAT</title>
     <style>
 		:root {
 			--bgc: white;
@@ -186,8 +186,11 @@
     	        </tbody>
     	    </table>
     	    <button onclick="addItem()">Dodaj pozycję</button>
+			<hr>
     	    
+			<!--
     	    <button onclick="generateJSON()">Generuj JSON</button>
+			-->
     	    <button onclick="generatePdf()">Generuj PDF</button>
 			<p id="pdf-status"></p>
     	    <pre id="output"></pre>
