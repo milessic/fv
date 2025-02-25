@@ -322,8 +322,12 @@ function gatherData(){
 }
 async function generatePdf(){
 	const pdfStatus = document.getElementById("pdf-status");
+	if ( !validateItems() ){ 
+		pdfStatus.innerText = `Najpierw dodaj pozycje!`
+		pdfStatus.classList.add('not-ok');
+		return
+	}
 	if ( !validateRequired() ){ 
-		window.alert("Pola na czerwonno, muszą zostać uzupełnione");
 		pdfStatus.innerText = `Najpierw uzupełnij wszystkie pola!`
 		pdfStatus.classList.add('not-ok');
 		return
@@ -381,7 +385,11 @@ function validateRequired(){
 	}
 	return allGood
 }
+	function validateItems(){
+		return document.querySelectorAll("#itemsTable .row").length? true : false;
+	}
 </script>
 </body>
 </html>
+
 
