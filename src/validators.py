@@ -17,6 +17,7 @@ def validate_payload(payload) -> list:
         # list - items
         if isinstance(v1, list):
             for i in payload["invoiceItems"]:
+                # FIXME some weird erro
                 for k2 in template.invoiceItems[0]:
                     if k2 not in i:
                         failures.append(f"2-items[{i}][{k2}]")

@@ -18,7 +18,8 @@ def generate_invoice():
     payload = json.loads(request.data)
     failures = validate_payload(payload)
     if len(failures):
-        return {"msg": "Brak wymaganych danych", "errors":failures}, 400
+        pass
+        #return {"msg": "Brak wymaganych danych", "errors":failures}, 400
     try:
         file_name = urllib.parse.quote_plus(payload["headers"]["invoiceNumber"] + ".pdf")
     except KeyError as k:
