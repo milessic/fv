@@ -17,3 +17,23 @@ Windows:
 ```
 choco install wkhtmltopdf
 ```
+
+create ``.env.json`` file with following template:
+
+for ipv4 
+```json
+{
+	"host": "0.0.0.0",
+	"port": 8123,
+	"debug": true
+}
+```
+
+for ipv6
+```json
+{
+	"host": "::",
+	"port": 8123,
+	"debug": true
+}
+```

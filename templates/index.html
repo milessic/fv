@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Faktur</title>
+    <style>
+		:root {
+			--bgc: white;
+		}
+        body { font-family: Arial, sans-serif; margin: 20px; }
+		#header-container { margin: auto; max-width: 800px;} 
+		#containers { display: flex; margin:auto; max-width: 1200px;}
+        .container {  margin: 0px auto; }
+        .wide-container { max-width: 1200px; margin: auto; }
+        label { display: block; margin-top: 10px; }
+        input, select {  padding: 8px; margin-top: 5px; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+		.field-wrapper { padding: auto;}
+		.field-wrapper > input[type="text"], .field-wrapper > input[type="date"], .field-wrapper > select { margin-top:10px;width: 100%;}
+		.field-wrapper label { position: absolute; margin-top: 0px; margin-left: 10px; background: var(--bgc); padding: 0px 3px;}
+		.checkbox-wrapper { display: inline-flex}
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        button { margin-top: 10px; padding: 10px; cursor: pointer; }
+		.hidden { display: none; }
+		.error input { border: 2px solid red }
+		.ok { color: green;}
+		.not-ok { color: red;}
+    </style>
+</head>
+<body>
+	<div id="header-container">
+    <h2>Generator Faktur</h2>
+	</div>
+	<div id="containers">
+		<div class="container-column container">
+			<div>
+		<h3>Dane sprzedawcy</h3>
+			<div class="field-wrapper required">
+    	    	<label>Nazwa</label>
+    	    	<input type="text" id="fromName">
+			</div>
+			<div class="field-wrapper required">
+    	    	<label>Ulica</label>
+    	    	<input type="text" id="fromStreet">
+			</div>
+			<div class="field-wrapper required">
+    	    	<label>Kod pocztowy, Miasto</label>
+    	    	<input type="text" id="fromCity">
+			</div>
+			<div class="field-wrapper required">
+    	    	<label>Kraj</label>
+    	    	<input type="text" id="fromCountry">
+			</div>
+			<div class="field-wrapper required">
+    	    	<label>NIP</label>
+    	    	<input type="text" id="fromNip" placeholder="jeszcze nie pobiera danych z CEIDG">
+			</div>
+			<div class="field-wrapper">
+    	    	<label>Regon</label>
+    	    	<input type="text" id="fromRegon">
+			</div>
+			<div class="field-wrapper">
+    	    	<label>KRS</label>
+    	    	<input type="text" id="fromKrs">
+			</div>
+			</div>
+		</div>
+		<div class="container-column container">
+			<div>
+			<h3>Dane nabywcy</h3>
+			<div class="field-wrapper required">
+    	    	<label>Nazwa</label>
+    	    	<input type="text" id="toName">
+			</div>
+			<div class="field-wrapper required">
+    	    	<label>Ulica</label>
+    	    	<input type="text" id="toStreet">
+			</div>
+			<div class="field-wrapper required">
+    	    	<label>Kod pocztowy, Miasto</label>
+    	    	<input type="text" id="toCity">
+			</div>
+			<div class="field-wrapper required">
+    	    	<label>Kraj</label>
+    	    	<input type="text" id="toCountry">
+			</div>
+			<div class="field-wrapper required">
+    	    	<label>NIP</label>
+    	    	<input type="text" id="toNip" placeholder="Jeszcze nie pobiera danych z CEIDG">
+			</div>
+			<div class="field-wrapper">
+    	    	<label>Regon</label>
+    	    	<input type="text" id="toRegon">
+			</div>
+			<div class="field-wrapper">
+    	    	<label>KRS</label>
+    	    	<input type="text" id="toKrs">
+			</div>
+			</div>
+		</div>
+    	<div class="container-column container">
+			<h3>Dane faktury</h3>
+			<div class="checkbox-wrapper">
+				<label for="isMetodaKasowa">Metoda kasowa?</label>
+				<input id="isMetodaKasowa" type="checkbox" checked="true">
+			</div>
+
+			<div class="checkbox-wrapper">
+				<label for="isCorrection">Korekta?</label>
+				<input id="isCorrection" type="checkbox">
+			</div>
+			<div class="field-wrapper correction-related hidden required">
+    	    	<label>Powód korekty</label>
+    	    	<input type="text" id="correctionReason">
+			</div>
+			<div class="field-wrapper correction-related hidden required">
+    	    	<label>Korygowany dokument</label>
+    	    	<input type="text" id="correctedDocument">
+			</div>
+			<hr>
+
+			<div class="field-wrapper required">
+    	    	<label>Numer faktury</label>
+    	    	<input type="text" id="invoiceNumber">
+			</div>
+			<hr>
+    	    
+			<div class="field-wrapper required">
+    	    	<label>Data wystawienia</label>
+				<input type="date" id="invoiceDate">
+			</div>
+			<div class="field-wrapper required">
+    	    	<label>Data sprzedaży</label>
+    	    	<input type="date" id="dateOfSales">
+			</div>
+    	    
+			<div class="field-wrapper required">
+    	    	<label>Termin płatności</label>
+    	    	<input type="date" id="paymentTerm">
+			</div>
+
+			<hr>
+			<div class="field-wrapper ">
+    	    	<label>Metoda płatności</label>
+				<select id="paymentMethod">
+					<option value="Przelew bankowy">Przelew bankowy</option>
+					<option value="Gotówka">Gotówka</option>
+				</select>
+			</div>
+
+			<div class="field-wrapper required" id="bankAccountContainer">
+    	    	<label>Numer Rachunku bankowego</label>
+    	    	<input id="bankAccountNumber" type="text">
+			</div>
+			
+			<hr>
+			<div class="field-wrapper required">
+    	    	<label>Osoba autoryzowana</label>
+    	    	<input id="authorizedPerson" type="text">
+			</div>
+
+			<div class="field-wrapper required">
+    	    	<label>Nota</label>
+    	    	<input id="note" value="Dziękujemy za współpracę!" type="text">
+			</div>
+		</div>
+	</div>
+		<div class="wide-container">
+    	    <h3>Pozycje faktury</h3>
+    	    <table>
+    	        <thead>
+    	            <tr>
+    	                <th>#</th>
+    	                <th>Nazwa</th>
+    	                <th>PKWiU</th>
+    	                <th>Ilość</th>
+    	                <th>Jednostka</th>
+    	                <th>Cena netto</th>
+    	                <th>VAT %</th>
+    	                <th>Usuń</th>
+    	            </tr>
+    	        </thead>
+    	        <tbody id="itemsTable">
+    	        </tbody>
+    	    </table>
+    	    <button onclick="addItem()">Dodaj pozycję</button>
+    	    
+    	    <button onclick="generateJSON()">Generuj JSON</button>
+    	    <button onclick="generatePdf()">Generuj PDF</button>
+			<p id="pdf-status"></p>
+    	    <pre id="output"></pre>
+    	</div>
+
+    <script>
+        let itemIndex = 1;
+
+		document.getElementById("isCorrection").addEventListener("click", handleCorrection)
+		document.getElementById("paymentMethod").addEventListener("change", handlePaymentMethod)
+		function handlePaymentMethod(){
+			const method = document.getElementById("paymentMethod").value;
+			if ( method === "Przelew bankowy"){
+				document.querySelectorAll("#bankAccountContainer").forEach( (e) => {e.classList.remove("hidden")});
+			} else{
+				document.querySelectorAll("#bankAccountContainer").forEach( (e) => {e.classList.add("hidden")});
+			}
+		}
+		function handleCorrection(){
+			const isEnabled = document.getElementById("isCorrection").checked;
+			if ( isEnabled ){
+				document.querySelectorAll(".correction-related").forEach( (e) => {e.classList.remove("hidden")});
+			} else{
+				document.querySelectorAll(".correction-related").forEach( (e) => {e.classList.add("hidden")});
+			}
+		}
+        
+        function addItem() {
+            const table = document.getElementById("itemsTable");
+            const row = table.insertRow();
+            row.innerHTML = `
+                <td>${itemIndex}</td>
+                <td><input type="text" class="itemDescription"></td>
+                <td><input type="text" class="pkwiuCode"></td>
+                <td><input type="number" class="quantity" value="1"></td>
+                <td><input type="text" class="unit"></td>
+                <td><input type="number" class="unitNetPrice" step="0.01"></td>
+                <td><input type="number" class="vatRatePercent" value="23"></td>
+                <td><button onclick="removeItem(this)">❌</button></td>
+            `;
+            itemIndex++;
+        }
+        
+        function removeItem(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+        
+        function generateJSON() {
+			const invoiceData = gatherData();
+
+            document.getElementById("output").textContent = JSON.stringify(invoiceData, null, 4);
+        }
+	function gatherData(){
+            const invoiceData = {
+                headers: {
+                    isMetodaKasowa: document.getElementById("isMetodaKasowa").checked,
+                    isCorrection: document.getElementById("isCorrection").checked,
+                    invoiceNumber: document.getElementById("invoiceNumber").value,
+                    invoiceDate: document.getElementById("invoiceDate").value,
+                    dateOfSales: document.getElementById("dateOfSales").value,
+                    paymentTerm: document.getElementById("paymentTerm").value,
+                    paymentMethod: document.getElementById("paymentMethod").value,
+                    bankAccountNumber: document.getElementById("bankAccountNumber").value,
+                },
+				recipients: {
+					from:{
+						name: document.getElementById("fromName").value,
+						addressStreet: document.getElementById("fromStreet").value,
+						addressCity: document.getElementById("fromCity").value,
+						nip: document.getElementById("fromNip").value,
+						regon: document.getElementById("fromRegon").value,
+						krs: document.getElementById("fromKrs").value,
+					},
+					to: {
+						name: document.getElementById("toName").value,
+						addressStreet: document.getElementById("toStreet").value,
+						addressCity: document.getElementById("toCity").value,
+						nip: document.getElementById("toNip").value,
+						regon: document.getElementById("toRegon").value,
+						krs: document.getElementById("toKrs").value,
+					},
+				},
+                invoiceItems: [],
+				summary: {
+				},
+				correction: {
+					reason: document.getElementById("correctionReason").value,
+					correctedDocument: document.getElementById("correctedDocument").value
+				},
+				footer: {
+					authorizedPerson: document.getElementById("authorizedPerson").value,
+					note: document.getElementById("note").value,
+
+				}
+            };
+
+            document.querySelectorAll("#itemsTable tr").forEach((row, index) => {
+                const inputs = row.querySelectorAll("input");
+                invoiceData.invoiceItems.push({
+                    itemNumber: (index + 1).toString(),
+                    itemDescription: inputs[0].value,
+                    pkwiuCode: inputs[1].value,
+                    quantity: parseInt(inputs[2].value),
+                    unit: inputs[3].value,
+                    unitNetPrice: parseFloat(inputs[4].value),
+                    vatRatePercent: parseInt(inputs[5].value)
+                });
+            });
+			return invoiceData
+	}
+	async function generatePdf(){
+		const pdfStatus = document.getElementById("pdf-status");
+		if ( !validateRequired() ){ 
+			window.alert("Pola na czerwonno, muszą zostać uzupełnione");
+			pdfStatus.innerText = `Najpierw uzupełnij wszystkie pola!`
+			pdfStatus.classList.add('not-ok');
+			return
+		}
+		pdfStatus.classList.remove('not-ok');
+		try {
+			pdfStatus.innerText = "Rozpoczęto generowanie PDF, proszę czekać..."
+			const data = gatherData();
+			const resp = await fetch("generate-invoice",
+				{
+					method: "POST",
+					body: JSON.stringify(data),
+					headers: {"ContentType": "application/json"}
+				}
+			)
+			pdfStatus.innerText = "Procesowanie faktury..."
+			if (! resp.ok ) {
+				window.alert("Nie można wygenerować faktury!")
+				pdfStatus.innerText = `Nie można wygenerować faktury!`
+				pdfStatus.classList.add('not-ok');
+				return
+			}
+			const b = await resp.blob();
+			const l = document.createElement("a");
+			l.href = URL.createObjectURL(b);
+			const fileName = getInvoiceName(data);
+			l.download = fileName;
+			document.body.appendChild(l);
+			l.click();
+			l.remove();
+			pdfStatus.innerText = `Faktura '${fileName}.pdf' została pobrana!`
+			pdfStatus.classList.add("ok")
+		} catch (err) {
+			pdfStatus.innerText = `Nie można wygenerować faktury!`
+			pdfStatus.classList.add('not-ok');
+			window.alert(err)
+		}
+	}
+
+	function getInvoiceName(data){
+		const number = data.headers.invoiceNumber;
+		let fileFriendly = number.replace(/\W/g, "_");
+		return fileFriendly;
+	}
+
+	function validateRequired(){
+		const requiredElements = document.querySelectorAll(".required");
+		let allGood = true;
+		for ( const el of requiredElements ){
+			inputEl = el.querySelector("input");
+			if ( el.classList.contains("hidden") ) { continue }
+			if ( inputEl.value ) { el.classList.remove('error'); continue }
+			allGood = false
+			el.classList.add('error');
+		}
+		return true
+		return allGood
+	}
+    </script>
+</body>
+</html>
+

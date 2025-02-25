@@ -173,3 +173,4 @@ cython_debug/
 results/
 user_scenarios/
 .DS_Store*
+.env.json
