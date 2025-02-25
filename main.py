@@ -15,25 +15,28 @@ def index():
 
 @app.route("/generate-invoice", methods=['POST'])
 def generate_invoice():
-    payload = json.loads(request.data)
-    failures = validate_payload(payload)
-    if len(failures):
-        pass
-        #return {"msg": "Brak wymaganych danych", "errors":failures}, 400
     try:
-        file_name = urllib.parse.quote_plus(payload["headers"]["invoiceNumber"] + ".pdf")
-    except KeyError as k:
-        return {"msg": f"Brak wymaganych danych! - {k}"}, 400
+        payload = json.loads(request.data)
+        failures = validate_payload(payload)
+        if len(failures):
+            pass
+            #return {"msg": "Brak wymaganych danych", "errors":failures}, 400
+        try:
+            file_name = urllib.parse.quote_plus(payload["headers"]["invoiceNumber"] + ".pdf")
+        except KeyError as k:
+            return {"msg": f"Brak wymaganych danych! - {k}"}, 400
 
-    pdf = generate_invoice_pdf_in_memory(
-            invoice_data=payload,
-            )
-    return send_file(
-            io.BytesIO(pdf),
-            mimetype="application/pdf",
-            as_attachment=True,
-            download_name=file_name
-            )
+        pdf = generate_invoice_pdf_in_memory(
+                invoice_data=payload,
+                )
+        return send_file(
+                io.BytesIO(pdf),
+                mimetype="application/pdf",
+                as_attachment=True,
+                download_name=file_name
+                )
+    except:
+        return {"msg": "Niepoprawne dane!"}, 400
 
 
 if __name__ == "__main__":
