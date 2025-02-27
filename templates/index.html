@@ -16,25 +16,31 @@
         .wide-container { max-width: 1200px; margin: auto; }
 		#positions-container { border: 1px solid #ddd;}
 		#positions-container > button { margin: 15px;}
-		.quantity, .vatRatePercent, .btn-remove{ width: 40px;}
+		td input, td textarea { width:-webkit-fill-available;}
+		.row-unit, .unit{ width: 60px;}
+		.row-qunatity, .quantity, .row-vatRatePercent, .vatRatePercent, .row-remove, .btn-remove{ width: 40px;}
         label { display: block; margin-top: 10px; }
 		#pdf-status-container { display: flex; }
 		#pdf-status-container * { margin-right: 15px;}
-        input, select {  padding: 8px; margin-top: 5px; }
+        textarea, input, select {  padding: 8px; margin-top: 5px; }
+		.field-wrapper textarea { height: 1rem;}
         table { width: 100%; margin-top: 20px; border-collapse: collapse; }
 		.field-wrapper { padding: auto;}
-		.field-wrapper > input[type="text"], .field-wrapper > input[type="date"], .field-wrapper > select { margin-top:10px;width: 90%;}
+		.field-wrapper > textarea, .field-wrapper > input[type="text"], .field-wrapper > input[type="date"], .field-wrapper > select { margin-top:10px;width: 90%;}
 		.field-wrapper label { position: absolute; margin-top: 0px; margin-left: 10px; background: var(--bgc); padding: 0px 3px;}
 		.checkbox-wrapper { display: inline-flex}
         th, td{ border: 1px solid #ddd; padding: 8px; text-align: left; }
 		td { background-color: white;}
         #positions-container, th, .row-index, .row-remove { background-color: #f4f4f4; }
-		button { height: 40px;width: 150px;margin-top: 10px; padding: 10px; cursor: pointer;}
+		button { min-height: 40px;width: 150px;margin-top: 10px; padding: 10px; cursor: pointer;}
 		.hidden { display: none; }
 		.error input { border: 2px solid red }
 		.ok { color: green;}
 		.not-ok { color: red;}
 		footer { width: 150px;margin:auto}
+		#btn-pdf { background-color: #2ffffe;border-color:#799579;}
+		#btn-pdf:hover {background-color: #0ad1d0;}
+		#top-nav {position: sticky;top:0px;background-color:var(--bgc);z-index:10;padding:5px;}
 		@media (max-width: 600px){
 			#containers {
 				display: flex;
@@ -44,20 +50,24 @@
     </style>
 </head>
 <body>
+	<div id="top-nav">
 	<div id="header-container">
     <h2>Generator Faktur</h2>
 	</div>
+	<hr>
+	</div>
+
 	<div id="containers">
 		<div class="container-column container">
 			<div>
 		<h3>Dane sprzedawcy</h3>
 			<div class="field-wrapper required">
     	    	<label>Nazwa</label>
-    	    	<input type="text" id="fromName">
+				<textarea type="text" id="fromName"></textarea>
 			</div>
 			<div class="field-wrapper required">
     	    	<label>Nazwa c.d.</label>
-    	    	<input type="text" id="fromName2">
+				<textarea type="text" id="fromName2"></textarea>
 			</div>
 			<div class="field-wrapper required">
     	    	<label>Ulica</label>
@@ -90,11 +100,11 @@
 			<h3>Dane nabywcy</h3>
 			<div class="field-wrapper required">
     	    	<label>Nazwa</label>
-    	    	<input type="text" id="toName">
+				<textarea type="text" id="toName"></textarea>
 			</div>
 			<div class="field-wrapper required">
     	    	<label>Nazwa c.d.</label>
-    	    	<input type="text" id="toName2">
+				<textarea type="text" id="toName2"></textarea>
 			</div>
 			<div class="field-wrapper required">
     	    	<label>Ulica</label>
@@ -174,7 +184,7 @@
 
 			<div class="field-wrapper required" id="bankAccountContainer">
     	    	<label>Numer Rachunku bankowego</label>
-    	    	<input id="bankAccountNumber" type="text">
+				<textarea id="bankAccountNumber" type="text"></textarea>
 			</div>
 			
 			<hr>
@@ -185,7 +195,7 @@
 
 			<div class="field-wrapper required">
     	    	<label>Nota</label>
-    	    	<input id="note" value="Dziękujemy za współpracę!" type="text">
+				<textarea id="note">Dziękujemy za współpracę!</textarea>
 			</div>
 		</div>
 	</div>
@@ -212,13 +222,13 @@
 		</div>
 			<hr>
 			<div id="pdf-status-container">
-    	    	<button onclick="generatePdf()">Generuj PDF</button>
+    	    	<button id="btn-pdf"onclick="generatePdf()">Generuj PDF</button>
 				<p id="pdf-status"></p>
 			</div>
 			<hr>
 			<div>
-    	    	<button onclick="exportJSON()">Export JSON</button>
-    	    	<button onclick="importJSON()">Import JSON</button>
+    	    	<button onclick="exportJSON()">Pobierz plik JSON</button>
+				<button onclick="importJSON()">Wgraj plik JSON</button><p> Możesz też przeciągnąć plik JSON na stronę</p>
 			</div>
     	    <pre id="output"></pre>
     	</div>
@@ -273,12 +283,12 @@
 		row.classList.add("row");
 		row.innerHTML = `
 			<td class="row-index"></td>
-			<td class="required"><input type="text" class="itemDescription" value="${itemDescription}"></td>
+			<td class="required"><textarea type="text" class="itemDescription">${itemDescription}</textarea></td>
 			<td><input type="text" class="pkwiuCode" value="${pkwiuCode}"></td>
-			<td class="required"><input type="number" class="quantity" value="1" min="0" value="${quantity}"></td>
-			<td class="required"><input type="text" class="unit" value="${unit}"></td>
+			<td class="row-qunatity required"><input type="number" class="quantity" value="1" min="0" value="${quantity}"></td>
+			<td class="row-unit required"><input type="text" class="unit" value="${unit}"></td>
 			<td class="required"><input type="number" class="unitNetPrice" step="0.01" min="0" value="${unitNetPrice}"></td>
-			<td class="required"><input type="number" class="vatRatePercent" value="23" min="0" value="${vatRatePercent}"></td>
+			<td class="row-vatRatePercent required"><input type="number" class="vatRatePercent" value="23" min="0" value="${vatRatePercent}"></td>
 			<td class="row-remove"><button class="btn-remove" onclick="removeItem(this)">❌</button></td>
 		`;
 		setRowIndexes();
@@ -403,7 +413,7 @@ function gatherData(){
 		};
 
 		document.querySelectorAll("#itemsTable tr").forEach((row, index) => {
-			const inputs = row.querySelectorAll("input");
+			const inputs = row.querySelectorAll("input, textarea");
 			invoiceData.invoiceItems.push({
 				itemNumber: (index + 1).toString(),
 				itemDescription: inputs[0].value,
@@ -471,9 +481,10 @@ function getInvoiceName(data){
 
 function validateRequired(){
 	const requiredElements = document.querySelectorAll(".required");
+	console.log(requiredElements);
 	let allGood = true;
 	for ( const el of requiredElements ){
-		inputEl = el.querySelector("input");
+		inputEl = el.querySelector("input, textarea");
 		if ( el.classList.contains("hidden") ) { continue }
 		if ( inputEl.value ) { el.classList.remove('error'); continue }
 		allGood = false
