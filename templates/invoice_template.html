@@ -89,6 +89,9 @@
         		<p>{{ invoice.recipients.from.name2 }}</p>
 				{% endif %}
         		<p>{{ invoice.recipients.from.addressStreet }}, {{ invoice.recipients.from.addressCity }}</p>
+				{% if invoice.recipients.from.addressCountry %}
+				<p>{{ invoice.recipients.from.addressCountry }}</p>
+				{% endif %}
         		<p>NIP: {{ invoice.recipients.from.nip }}</p>
 
 				{% if invoice.recipients.from.krs %}
@@ -110,6 +113,9 @@
         		<p id="t">{{ invoice.recipients.to.name2 }}</p>
 				{% endif %}
         		<p>{{ invoice.recipients.to.addressStreet }}, {{ invoice.recipients.to.addressCity }}</p>
+				{% if invoice.recipients.to.addressCountry %}
+				<p>{{ invoice.recipients.to.addressCountry }}</p>
+				{% endif %}
         		<p>NIP: {{ invoice.recipients.to.nip }}</p>
 
 				{% if invoice.recipients.to.krs %}
