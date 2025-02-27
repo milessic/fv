@@ -9,7 +9,9 @@
 			--bgc: white;
 		}
         body { font-family: Arial, sans-serif; margin: 20px; }
-		#header-container { margin: auto; max-width: 800px;} 
+		#overlay { background-color: #00000073; position:fixed; width:100%;height:100%;z-index:11;left:0px;top:0px;}
+		#header-container { display:flex;margin: auto;}
+		#header-buttons-container { display:flex;margin-right:0px;margin-left:auto;}
 		#containers { display: flex; margin:auto; max-width: 1200px; flex-wrap:wrap;}
         .container {  margin: 0px auto; }
 		.container-column { width: 20rem;}
@@ -43,20 +45,54 @@
 		#top-nav {position: sticky;top:0px;background-color:var(--bgc);z-index:10;padding:5px;}
 		.row-item-description { padding: 0px 0px 0px 5px;}
 		.row-item-description textarea{ margin: 2px; }
+		#example-container img {border: 1px solid black;}
+		.align-right { position:inherit;right: 50px;}
+		#example-container {
+			position: absolute;
+			min-width: 500px;
+			min-height: 500px;
+			z-index: 15;
+			top: 50px;
+			right: 150px;
+			bottom: auto;
+			background-color: var(--bgc);
+			padding: 30px;
+			border: 1px solid #ddd;
+
+		}
 		@media (max-width: 600px){
 			#containers {
 				display: flex;
 				fler-direction: column;
+			}
+			#example-container {
+				width: 100%;
+				height: 100%;
+				position:fixed;
+				top:0px;
+				left:auto;
+				right:auto;
+				bottom:auto;
+			}
+			#example-container img {
+				max-width: 100vw;
 			}
 		}
     </style>
 </head>
 <body>
 	<div id="top-nav">
-	<div id="header-container">
-    <h2>Generator Faktur</h2>
-	</div>
-	<hr>
+		<div id="header-container">
+    		<h2>Generator Faktur</h2>
+			<div id="header-buttons-container">
+				<div id="pdf-status-container">
+					<p id="pdf-status"></p>
+    	    		<button id="btn-pdf"onclick="generatePdf()">Generuj PDF</button>
+				</div>
+				<button id="show-example">Pokaż przykładową fakturę</button>
+			</div>
+		</div>
+		<hr>
 	</div>
 
 	<div id="containers">
@@ -67,7 +103,7 @@
     	    	<label>Nazwa</label>
 				<textarea type="text" id="fromName"></textarea>
 			</div>
-			<div class="field-wrapper required">
+			<div class="field-wrapper">
     	    	<label>Nazwa c.d.</label>
 				<textarea type="text" id="fromName2"></textarea>
 			</div>
@@ -104,7 +140,7 @@
     	    	<label>Nazwa</label>
 				<textarea type="text" id="toName"></textarea>
 			</div>
-			<div class="field-wrapper required">
+			<div class="field-wrapper">
     	    	<label>Nazwa c.d.</label>
 				<textarea type="text" id="toName2"></textarea>
 			</div>
@@ -223,11 +259,6 @@
     	    <button onclick="addItem()">Dodaj pozycję</button>
 		</div>
 			<hr>
-			<div id="pdf-status-container">
-    	    	<button id="btn-pdf"onclick="generatePdf()">Generuj PDF</button>
-				<p id="pdf-status"></p>
-			</div>
-			<hr>
 			<div>
     	    	<button onclick="exportJSON()">Pobierz plik JSON</button>
 				<button onclick="importJSON()">Wgraj plik JSON</button><p> Możesz też przeciągnąć plik JSON na stronę</p>
@@ -239,7 +270,9 @@
 			<a href="https://github.com/milessic/fv" target="blank">fv on GitHub</a>
 		</footer>
 <script>
+	let exampleShown = false;
 	document.addEventListener('load', addItem());
+	document.getElementById("show-example").addEventListener('click', showExample);
 	document.addEventListener('dragover', (e) => {
     	e.preventDefault()
 	});
@@ -254,8 +287,40 @@
 		reader.readAsText(file);
 	});
 
-	document.getElementById("isCorrection").addEventListener("click", handleCorrection)
-	document.getElementById("paymentMethod").addEventListener("change", handlePaymentMethod)
+	document.getElementById("isCorrection").addEventListener("click", handleCorrection);
+	document.getElementById("paymentMethod").addEventListener("change", handlePaymentMethod);
+	document.addEventListener('click', () => {
+		if (!exampleShown){console.log(0);return}
+		console.log(exampleShown)
+		document.getElementById('example-container').classList.add('hidden');
+		exampleShown = false;
+	});
+
+	function showExample(){
+		const el = document.getElementById('example-container');
+		setTimeout(()=>{exampleShown = true}, 100);
+		if ( el ) {
+			el.classList.remove('hidden');
+			return
+		}
+		const container = document.createElement('div');
+		const overlay = document.createElement('div');
+		overlay.id = 'overlay'
+
+		container.id = 'example-container'
+		container.innerHTML = `
+		<div class='align-right'>
+			<button id='close-example' class='btn-remove'>❌</button>
+		</div>
+		<div class='img-container'>
+			<img src='/static/demo_invoice.png'></img>
+		</div>
+	`
+		document.body.appendChild(container);
+		document.body.appendChild(overlay);
+		document.getElementById('close-example').addEventListener('click', () => { exampleShown = false;container.classList.add('hidden')})
+	}
+
 	function handlePaymentMethod(){
 		const method = document.getElementById("paymentMethod").value;
 		if ( method === "Przelew bankowy"){
@@ -557,6 +622,7 @@ function validateRequired(){
 			document.getElementById(id).value = val;
 		}
 	}
+
 </script>
 </body>
 </html>

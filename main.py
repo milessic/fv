@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, send_file
 import json
 import io
 import urllib.parse
+import os
 
 
 from src.fv import generate_invoice_pdf_in_memory
@@ -12,6 +13,14 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/static/{file_name}", methods=['GET'])
+def get_static(file_name):
+    try:
+        file_path = os.path.join(os.path.dirname(__file__), 'static', file_name)
+        return send_file(file_path)
+    except Exception as e:
+        return {"msg": "Nie ma takiego pliku!"}, 404
 
 @app.route("/generate-invoice", methods=['POST'])
 def generate_invoice():

@@ -1,0 +1,54 @@
+{
+	"headers": {
+		"isMetodaKasowa": true,
+		"isCorrection": false,
+		"invoiceNumber": "24/2025",
+		"invoiceDate": "2025-02-27",
+		"dateOfSales": "2025-02-27",
+		"paymentTerm": "2025-03-20",
+		"paymentMethod": "Przelew bankowy",
+		"bankAccountNumber": "MójBank 1235 0981 1273 5491 0000 1234"
+	},
+	"recipients": {
+		"from": {
+			"name": "Milessic",
+			"name2": "",
+			"addressStreet": "Internetowa 1",
+			"addressCity": "00-000 Localhost",
+			"nip": "1270018000",
+			"regon": "",
+			"krs": "",
+			"addressCountry": "World Wide Web"
+		},
+		"to": {
+			"name": "Twoja firma",
+			"name2": "Twoja firma",
+			"addressStreet": "Przyszłości 17",
+			"addressCity": "00-999 Kapitol",
+			"nip": "49102948577",
+			"regon": "",
+			"krs": "",
+			"addressCountry": "Polska"
+		}
+	},
+	"invoiceItems": [
+		{
+			"itemNumber": "1",
+			"itemDescription": "Wykonanie programu komputerowego",
+			"pkwiuCode": "62.01.11.0",
+			"quantity": 1,
+			"unit": "szt",
+			"unitNetPrice": 3000,
+			"vatRatePercent": 23
+		}
+	],
+	"summary": {},
+	"correction": {
+		"reason": "",
+		"correctedDocument": ""
+	},
+	"footer": {
+		"authorizedPerson": "Milessic",
+		"note": "Dziękujemy za współpracę!"
+	}
+}
