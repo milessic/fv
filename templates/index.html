@@ -466,7 +466,7 @@ async function generatePdf(){
 function getInvoiceName(data){
 	const number = data.headers.invoiceNumber;
 	let fileFriendly = number.replace(/\W/g, "_");
-	return fileFriendly;
+	return "faktura_" + fileFriendly;
 }
 
 function validateRequired(){
