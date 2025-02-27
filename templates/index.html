@@ -18,7 +18,7 @@
 		#positions-container > button { margin: 15px;}
 		td input, td textarea { width:-webkit-fill-available;}
 		.row-unit, .unit{ width: 60px;}
-		.row-qunatity, .quantity, .row-vatRatePercent, .vatRatePercent, .row-remove, .btn-remove{ width: 40px;}
+		.row-quantity, .quantity, .row-vatRatePercent, .vatRatePercent, .row-remove, .btn-remove{ width: 40px;}
         label { display: block; margin-top: 10px; }
 		#pdf-status-container { display: flex; }
 		#pdf-status-container * { margin-right: 15px;}
@@ -34,17 +34,19 @@
         #positions-container, th, .row-index, .row-remove { background-color: #f4f4f4; }
 		button { min-height: 40px;width: 150px;margin-top: 10px; padding: 10px; cursor: pointer;}
 		.hidden { display: none; }
-		.error input { border: 2px solid red }
+		.error input, .error textarea { border: 2px solid red }
 		.ok { color: green;}
 		.not-ok { color: red;}
 		footer { width: 150px;margin:auto}
 		#btn-pdf { background-color: #2ffffe;border-color:#799579;}
 		#btn-pdf:hover {background-color: #0ad1d0;}
 		#top-nav {position: sticky;top:0px;background-color:var(--bgc);z-index:10;padding:5px;}
+		.row-item-description { padding: 0px 0px 0px 5px;}
+		.row-item-description textarea{ margin: 2px; }
 		@media (max-width: 600px){
 			#containers {
 				display: flex;
-				flex-direction: column;
+				fler-direction: column;
 			}
 		}
     </style>
@@ -284,11 +286,11 @@
 		row.classList.add("row");
 		row.innerHTML = `
 			<td class="row-index"></td>
-			<td class="required"><textarea type="text" class="itemDescription">${itemDescription}</textarea></td>
+			<td class="row-item-description required"><textarea type="text" class="itemDescription">${itemDescription}</textarea></td>
 			<td><input type="text" class="pkwiuCode" value="${pkwiuCode}"></td>
-			<td class="row-qunatity required"><input type="number" class="quantity" value="1" min="0" value="${quantity}"></td>
+			<td class="row-quantity required"><input type="number" class="quantity" value="1" min="0" value="${quantity}"></td>
 			<td class="row-unit required"><input type="text" class="unit" value="${unit}"></td>
-			<td class="required"><input type="number" class="unitNetPrice" step="0.01" min="0" value="${unitNetPrice}"></td>
+			<td class="row-unit-price required"><input type="number" class="unitNetPrice" step="0.01" min="0" value="${unitNetPrice}"></td>
 			<td class="row-vatRatePercent required"><input type="number" class="vatRatePercent" value="23" min="0" value="${vatRatePercent}"></td>
 			<td class="row-remove"><button class="btn-remove" onclick="removeItem(this)">❌</button></td>
 		`;
@@ -429,13 +431,18 @@ function gatherData(){
 }
 async function generatePdf(){
 	const pdfStatus = document.getElementById("pdf-status");
-	if ( !validateItems() ){ 
+	if ( !validateItemsLen() ){ 
 		pdfStatus.innerText = `Najpierw dodaj pozycje!`
 		pdfStatus.classList.add('not-ok');
 		return
 	}
 	if ( !validateRequired() ){ 
 		pdfStatus.innerText = `Najpierw uzupełnij wszystkie pola!`
+		pdfStatus.classList.add('not-ok');
+		return
+	}
+	if ( !validateNumericValues() ){ 
+		pdfStatus.innerText = `Wartości dla pól na czerwono muszą być uzupełnione / mieć wartości nieujemne!`
 		pdfStatus.classList.add('not-ok');
 		return
 	}
@@ -482,7 +489,6 @@ function getInvoiceName(data){
 
 function validateRequired(){
 	const requiredElements = document.querySelectorAll(".required");
-	console.log(requiredElements);
 	let allGood = true;
 	for ( const el of requiredElements ){
 		inputEl = el.querySelector("input, textarea");
@@ -493,9 +499,20 @@ function validateRequired(){
 	}
 	return allGood
 }
-	function validateItems(){
+	function validateItemsLen(){
 		return document.querySelectorAll("#itemsTable .row").length? true : false;
 	}
+	function validateNumericValues(){
+		let status = true;
+		document.querySelectorAll("#itemsTable .row-quantity, #itemsTable .row-unit-price, .row-vatRatePercent ").forEach( (e) => {
+			if ( parseFloat(e.querySelector("input, textarea").value) < 0  ) {
+				e.classList.add("error");
+				status = false;
+			}
+		});
+		return status;
+	}
+
 	function save(filename, data) {
 		filename = filename + ".json"
 		    const blob = new Blob([data], {type: 'text/json'});
