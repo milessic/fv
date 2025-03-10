@@ -256,12 +256,12 @@
     	        <tbody id="itemsTable">
     	        </tbody>
     	    </table>
-    	    <button onclick="addItem()">Dodaj pozycję</button>
+    	    <button id="addNewItem" onclick="addItem()">Dodaj pozycję</button>
 		</div>
 			<hr>
 			<div>
-    	    	<button onclick="exportJSON()">Pobierz plik JSON</button>
-				<button onclick="importJSON()">Wgraj plik JSON</button><p> Możesz też przeciągnąć plik JSON na stronę</p>
+    	    	<button id="importJsonButton" onclick="exportJSON()">Pobierz plik JSON</button>
+				<button id="exportJsonButton" onclick="importJSON()">Wgraj plik JSON</button><p> Możesz też przeciągnąć plik JSON na stronę</p>
 			</div>
     	    <pre id="output"></pre>
     	</div>
