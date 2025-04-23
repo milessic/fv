@@ -174,7 +174,7 @@
 			<h3>Dane faktury</h3>
 			<div class="checkbox-wrapper">
 				<label for="isMetodaKasowa">Metoda kasowa?</label>
-				<input id="isMetodaKasowa" type="checkbox" checked="true">
+				<input id="isMetodaKasowa" type="checkbox">
 			</div>
 
 			<div class="checkbox-wrapper">
@@ -629,6 +629,14 @@ function validateRequired(){
 		}
 		const val = tData[key]
 		if ( val ) {
+			if (key =="lang" && val.toLowerCase() === "english"){
+				document.getElementById(id).checked = true;
+				return;
+			}
+			if (["isMetodaKasowa","isCorrection"].includes(id)){
+				document.getElementById(id).checked = val;
+				return;
+			}
 			document.getElementById(id).value = val;
 		}
 	}
