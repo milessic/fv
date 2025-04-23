@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>
 		{% if invoice.headers.isCorrection %}
-			Faktura VAT Korygująca
+			{{ t.txt_faktura_vat_korygujaca }}
 		{% else %}
-			Faktura VAT 
+			{{ t.txt_faktura_vat }}
 		{% endif %}
 		{{ invoice.headers.invoiceNumber }}
 	</title>
@@ -16,9 +16,7 @@
     <style>
         body { font-family: 'Roboto', sans-serif; margin: 40px; /*background: #f5f5f5;*/ }
         .container { max-width: 800px; margin: auto; padding: 20px; background: white; border-radius: 8px; /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/ }
-		#headers-container { padding-left: 465px;}
 		p { margin: 5px; }
-		#headers-container p { margin: 5px; }
 		#recipients-container { display: flex; flex-direction: row; }
 		#recipients-container * { text-align: left; }
 		#recipients-container p { margin: 1px; }
@@ -27,7 +25,6 @@
 		h1 { margin-bottom: 5px;}
 		h4 { text-align: center; color: #010101; margin-top:1px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        #correction-table th, #correction-table td, #invoice-table th, #invoice-table td, #summary-table td{ border: 1px solid #ddd; padding: 8px; text-align: left; }
 		.cell-label { font-weight: 500; }
         th { background-color: #3f51b5; color: white; }
         .summary { margin-top: 20px; padding: 10px; /*background: #e3f2fd;*/ border-radius: 5px; }
@@ -37,6 +34,19 @@
 		.th-small { font-size: x-small; }
 		.alternate-colors tr { background-color: #e3f2fd; }
 		.alternate-colors tr:nth-child(even) { background-color: white; }
+		/* Due to multi-lang having much longer string*/
+	{% if invoice.headers.lang %}
+		#headers-container { padding-left: 289px;}
+		#headers-container p { margin: 5px; }
+		#headers-container td, #headers-container tr { border: 1px solid #ddd;padding:2px;padding-left:5px;}
+
+        #correction-table th, #correction-table td, #invoice-table th, #invoice-table td, #summary-table td{ border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
+	{% else %}
+		#headers-container { padding-left: 465px;}
+		#headers-container p { margin: 5px; }
+		
+        #correction-table th, #correction-table td, #invoice-table th, #invoice-table td, #summary-table td{ border: 1px solid #ddd; padding: 8px; text-align: left; }
+	{% endif %}
 
     </style>
 </head>
@@ -44,34 +54,34 @@
     <div class="container">
 		<h1>
 		{% if invoice.headers.isCorrection %}
-			Faktura VAT Korygująca
+			{{ t.txt_faktura_vat_korygujaca }}
 		{% else %}
-			Faktura VAT 
+			{{ t.txt_faktura_vat }}
 		{% endif %}
 		</h1>
 		{% if invoice.headers.isMetodaKasowa %}
-		<h4>Metoda Kasowa</h4>
+		<h4>{{ t.txt_metoda_kasowa }}</h4>
 		{% endif %} 
 		{% if invoice.headers.isCorrection %}
-		<p><strong>Korygowany dokument:</strong> {{ invoice.correction.correctedDocument }}</p>
+		<p><strong>{{ t.txt_korygowany_dokument }}:</strong> {{ invoice.correction.correctedDocument }}</p>
 		{% endif %}
 		<div id="headers-container">
-			<table class="invisible-table" cellpadding="0" cellspacing="0" border="0">
+			<table class="headers-table alternate-colors" cellpadding="0" cellspacing="0" border="0">
 				<tbody>
 					<tr>
-						<td colspan="2">Wystawiono w dniu {{ invoice.headers.invoiceDate }}, {{ invoice.headers.issued }}</td>
+						<td colspan="2">{{ t.txt_wystawiono_w_dniu}} {{ invoice.headers.invoiceDate }}, {{ invoice.headers.issued }}</td>
 					</tr>
 					<tr>
-						<td class="cell-label">Numer faktury</td><td>{{ invoice.headers.invoiceNumber }}</td>
+						<td class="cell-label">{{ t.txt_numer_faktury}}</td><td>{{ invoice.headers.invoiceNumber }}</td>
 					</tr>
 					<tr>
-        				<td class="cell-label">Data sprzedaży</td><td>{{ invoice.headers.dateOfSales }}</td>
+						<td class="cell-label">{{ t.txt_data_sprzedazy }}</td><td>{{ invoice.headers.dateOfSales }}</td>
 					</tr>
 					<tr>
-        				<td class="cell-label">Termin płatności</td><td>{{ invoice.headers.paymentTerm }}</td>
+						<td class="cell-label">{{ t.txt_termin_platnosci}}</td><td>{{ invoice.headers.paymentTerm }}</td>
 					</tr>
 					<tr>
-        				<td class="cell-label">Sposób zapłaty</td><td>{{ invoice.headers.paymentMethod }}</td>
+						<td class="cell-label">{{ t.txt_sposob_zaplaty}}</td><td>{{ invoice.headers.paymentMethod }}</td>
 				</tr>
 				</tbody>
 			</table>
@@ -83,7 +93,7 @@
 					<tr>
 						<td>
 			<div id="recipients-from">
-        		<h3>Sprzedawca</h3>
+				<h3>{{ t.txt_sprzedawca }}</h3>
         		<p>{{ invoice.recipients.from.name }}</p>
 				{% if invoice.recipients.from.name2 %}
         		<p>{{ invoice.recipients.from.name2 }}</p>
@@ -106,7 +116,7 @@
 						</td>
 						<td style="width:50%;">
 			<div id="recipients-to">
-        		<h3>Nabywca</h3>
+				<h3>{{ t.txt_nabywca }}</h3>
 				<div>
         		<p id="o">{{ invoice.recipients.to.name }}</p>
 				{% if invoice.recipients.to.name2 %}
@@ -135,14 +145,14 @@
 
         <table id="invoice-table" class="alternate-colors">
             <tr>
-                <th>Lp.</th>
-                <th>Nazwa towaru lub usługi</th>
-                <th>PKWiU</th>
-                <th>Ilość</th>
-                <th>Jednostka</th>
-                <th class="th-small">Cena jedn. netto</th>
-                <th class="th-small">Wartość netto</th>
-                <th class="th-small">Stawka VAT</th>
+				<th>{{ t.txt_lp }}</th>
+				<th>{{ t.txt_nazwa_towaru_lub_uslugi}}</th>
+				<th>{{ t.txt_pkwiu}}</th>
+				<th>{{ t.txt_ilosc}}</th>
+				<th>{{ t.txt_jednostka}}</th>
+				<th class="th-small">{{ t.txt_cena_jedn_netto}}</th>
+				<th class="th-small">{{ t.txt_wartosc_netto}}</th>
+				<th class="th-small">{{ t.txt_stawka_vat}}</th>
             </tr>
             {% for item in invoice.invoiceItems %}
             <tr>
@@ -159,23 +169,23 @@
         </table>
 
         <div class="summary">
-			<h3 id="summary-header">Podsumowanie</h3>
+			<h3 id="summary-header">{{ t.txt_podsumowanie }}</h3>
 			<table id="summary-table" class="alternate-colors">
 				<tbody>
 					<tr>
-						<td class="cell-label">Wartość netto:</td><td> {{ invoice.summary.netValue }}</td>
+						<td class="cell-label">{{ t.txt_wartosc_netto}}:</td><td> {{ invoice.summary.netValue }}</td>
 					</tr>
 					<tr>
-						<td class="cell-label">VAT:<td> {{ invoice.summary.vatValue }}</td>
+						<td class="cell-label">{{ t.txt_vat_ }}:<td> {{ invoice.summary.vatValue }}</td>
 					</tr>
 					<tr>
-						<td class="cell-label">Wartość brutto:</td><td> {{ invoice.summary.grossValue }}</td>
+						<td class="cell-label">{{ t.txt_wartosc_brutto}}:</td><td> {{ invoice.summary.grossValue }}</td>
 					</tr>
 					<tr>
-						<td class="cell-label">Wartość faktury słownie:</td><td> {{ invoice.summary.totalInWords }}</td>
+						<td class="cell-label">{{ t.txt_wartosc_faktury_slownie}}:</td><td> {{ invoice.summary.totalInWords }}</td>
 					</tr>
 					<tr>
-						<td class="cell-label">Konto bankowe:</td><td> {{ invoice.headers.bankAccountNumber }}</td>
+						<td class="cell-label">{{ t.txt_konto_bankowe}}:</td><td> {{ invoice.headers.bankAccountNumber }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -183,7 +193,7 @@
 
 		{% if invoice.headers.isCorrection %}
 		<div id="correction">
-			<h3>Przyczyna korekty</h3>
+			<h3>{{ t.txt_przyczyna_korekty}}</h3>
 			<table id="correction-table" class="alternate-colors">
 				<tr>
 					<td>
@@ -197,11 +207,11 @@
         <footer>
             <p>{{ invoice.footer.note }}</p>
 			{% if invoice.footer.hasToBeSigned %}
-			<p>Faktura wymaga podpisu</p>
+			<p>{{ t.txt_faktura_wymaga_podpisu}}</p>
 			{% else %}
-			<p>Faktura nie wymaga podpisu</p>
+			<p>{{ t.txt_faktura_nie_wymaga_podpisu}}</p>
 			{% endif %}
-            <p>Upoważniona osoba: {{ invoice.footer.authorizedPerson }}</p>
+			<p>{{ t.txt_upowazniona_osoba}}: {{ invoice.footer.authorizedPerson }}</p>
         </footer>
     </div>
 </body>

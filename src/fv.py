@@ -6,6 +6,7 @@ import os
 from src.color import color, Color
 from src.numbers_as_words import get_price_as_words
 from src.round_numbers import  round_price
+from src.translations import Translations
 
 help_text = """=== pyFV
 a program to generate Faktura VAT
@@ -40,6 +41,10 @@ results_dir = os.path.join(main_dir, results_folder)
 env = Environment(loader=FileSystemLoader(template_dir))
 template = env.get_template("invoice_template.html")
 
+def refresh_template():
+    global template
+    template = env.get_template("invoice_template.html")
+
 def print_status(msg:str, really:bool, invoice_number, prefix:str="Faktura ", msg_color:Color=Color.reset):
     if really:
         print(f"{color(prefix, Color.blue)}{color(invoice_number, Color.bold)}: {color(msg, msg_color)}")
@@ -47,8 +52,8 @@ def print_status(msg:str, really:bool, invoice_number, prefix:str="Faktura ", ms
 def generate_invoice_name(invoice_data:dict):
     return f"""faktura {invoice_data["headers"]["invoiceNumber"].replace("/","_")}"""
 
-def generate_invoice_html(invoice_data:dict):
-    return template.render(invoice=invoice_data)
+def generate_invoice_html(invoice_data:dict, lang:None|str=None):
+    return template.render(invoice=invoice_data, t=Translations(lang))
 
 def generate_result_path(invoice_name, file_extension, additional_results_folder=None):
     if additional_results_folder is not None:
@@ -93,7 +98,8 @@ def calculate_summary(invoice_data:dict) -> dict:
 
 
 
-def generate_invoice_pdf_in_memory(invoice_data:dict, console:bool=False):
+def generate_invoice_pdf_in_memory(invoice_data:dict, console:bool=False, lang:None|str=None):
+    print(lang)
     invoice_number = invoice_data["headers"]["invoiceNumber"]
     invoice_data = calculate_summary(invoice_data)
 
@@ -101,7 +107,7 @@ def generate_invoice_pdf_in_memory(invoice_data:dict, console:bool=False):
         print_status("Faktura wczytana pomyślnie", console, invoice_number)
     
     # generate html
-    html_content = generate_invoice_html(invoice_data)
+    html_content = generate_invoice_html(invoice_data, lang)
     pdf = pdfkit.from_string(html_content, False) #configuration=PDFKIT_CONFIG)
 
 

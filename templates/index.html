@@ -185,6 +185,10 @@
     	    	<label>Powód korekty</label>
     	    	<input type="text" id="correctionReason">
 			</div>
+			<div class="checkbox-wrapper">
+				<label for="isEnglish">Po angielsku?</label>
+				<input id="isEnglish" type="checkbox">
+			</div>
 			<div class="field-wrapper correction-related hidden required">
     	    	<label>Korygowany dokument</label>
     	    	<input type="text" id="correctedDocument">
@@ -394,6 +398,8 @@ function populateFieldsFromData(data){
 	fillFieldDueToData(data, "paymentTerm", "paymentTerm", "headers");
 	fillFieldDueToData(data, "paymentMethod", "paymentMethod", "headers");
 	fillFieldDueToData(data, "bankAccountNumber", "bankAccountNumber", "headers");
+	// english
+	fillFieldDueToData(data, "lang", "isEnglish", "headers");
 	// recipients - from 
 	fillFieldDueToData(data, "name", "fromName", "recipients", "from");
 	fillFieldDueToData(data, "name2", "fromName2", "recipients", "from");
@@ -435,6 +441,7 @@ function populateFieldsFromData(data){
 }
 
 function gatherData(){
+		const langValue = document.getElementById("isEnglish").value ? "english" : null;
 		const invoiceData = {
 			headers: {
 				isMetodaKasowa: document.getElementById("isMetodaKasowa").checked,
@@ -445,6 +452,7 @@ function gatherData(){
 				paymentTerm: document.getElementById("paymentTerm").value,
 				paymentMethod: document.getElementById("paymentMethod").value,
 				bankAccountNumber: document.getElementById("bankAccountNumber").value,
+				lang: document.getElementById("isEnglish").checked ? "english" : null,
 			},
 			recipients: {
 				from:{
