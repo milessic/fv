@@ -5,7 +5,7 @@ import urllib.parse
 import os
 
 
-from src.fv import generate_invoice_pdf_in_memory
+from src.fv import generate_invoice_pdf_in_memory, refresh_template
 from src.validators import validate_payload
 
 app = Flask(__name__)
@@ -22,10 +22,16 @@ def get_static(file_name):
     except Exception as e:
         return {"msg": "Nie ma takiego pliku!"}, 404
 
+@app.route("/refresh", methods=['GET'])
+def refresh_template_endpoint():
+    refresh_template()
+    return "ok"
+
 @app.route("/generate-invoice", methods=['POST'])
 def generate_invoice():
     try:
         payload = json.loads(request.data)
+        lang = payload.get("headers",{}).get("lang")
         ##failures = validate_payload(payload)
         #if len(failures):
         #    pass
@@ -39,6 +45,7 @@ def generate_invoice():
     try:
         pdf = generate_invoice_pdf_in_memory(
                 invoice_data=payload,
+                lang=lang
                 )
     except Exception as e:
         return {"msg": "Niepoprawne dane!", "details": str(e)}, 400
