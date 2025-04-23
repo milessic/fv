@@ -355,9 +355,11 @@
 	function handleReverseCharge(){
 		const isEnabled = document.getElementById("isReverseCharge").checked;
 		if ( isEnabled ){
-			document.querySelectorAll(".vat-field").forEach( (e) => {e.classList.remove("hidden")});
-		} else{
 			document.querySelectorAll(".vat-field").forEach( (e) => {e.classList.add("hidden")});
+			document.querySelectorAll(".row-vatRatePercent").forEach( (e) => {e.classList.add("hidden");e.querySelector("input").value = "";});
+		} else{
+			document.querySelectorAll(".vat-field").forEach( (e) => {e.classList.remove("hidden")});
+			document.querySelectorAll(".row-vatRatePercent").forEach( (e) => {e.classList.remove("hidden")});
 		}
 	}
 	
@@ -457,6 +459,7 @@ function populateFieldsFromData(data){
 			);
 		}
 	}
+	handleReverseCharge();
 }
 
 function gatherData(){
