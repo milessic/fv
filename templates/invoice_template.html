@@ -29,7 +29,7 @@
         th { background-color: #3f51b5; color: white; }
         .summary { margin-top: 20px; padding: 10px; /*background: #e3f2fd;*/ border-radius: 5px; }
 		#summary-header { text-align: left; }
-		#correction h3 { text-align: left; margin-bottom: 3px; }
+		.additional-table-container h3 { text-align: left; margin-bottom: 3px; }
         footer { margin-top: 20px; text-align: center; font-size: 14px; color: #757575; }
 		.th-small { font-size: x-small; }
 		.alternate-colors tr { background-color: #e3f2fd; }
@@ -40,12 +40,12 @@
 		#headers-container p { margin: 5px; }
 		#headers-container td, #headers-container tr { border: 1px solid #ddd;padding:2px;padding-left:5px;}
 
-        #correction-table th, #correction-table td, #invoice-table th, #invoice-table td, #summary-table td{ border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
+        .additional-table th, .additional-table td, #invoice-table th, #invoice-table td, #summary-table td{ border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
 	{% else %}
 		#headers-container { padding-left: 465px;}
 		#headers-container p { margin: 5px; }
 		
-        #correction-table th, #correction-table td, #invoice-table th, #invoice-table td, #summary-table td{ border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .additional-table th, .additional-table td, #invoice-table th, #invoice-table td, #summary-table td{ border: 1px solid #ddd; padding: 8px; text-align: left; }
 	{% endif %}
 
     </style>
@@ -62,6 +62,9 @@
 		{% if invoice.headers.isMetodaKasowa %}
 		<h4>{{ t.txt_metoda_kasowa }}</h4>
 		{% endif %} 
+		{% if invoice.headers.isReverseCharge %}
+		<h4>{{ t.txt_odwrotne_obciazenie }}</h4>
+		{% endif %}
 		{% if invoice.headers.isCorrection %}
 		<p><strong>{{ t.txt_korygowany_dokument }}:</strong> {{ invoice.correction.correctedDocument }}</p>
 		{% endif %}
@@ -152,7 +155,9 @@
 				<th>{{ t.txt_jednostka}}</th>
 				<th class="th-small">{{ t.txt_cena_jedn_netto}}</th>
 				<th class="th-small">{{ t.txt_wartosc_netto}}</th>
-				<th class="th-small">{{ t.txt_stawka_vat}}</th>
+				{% if not invoice.headers.isReverseCharge %}
+					<th class="th-small">{{ t.txt_stawka_vat}}</th>
+				{% endif %}
             </tr>
             {% for item in invoice.invoiceItems %}
             <tr>
@@ -163,7 +168,9 @@
                 <td>{{ item.unit }}</td>
                 <td>{{ item.unitNetPrice }}</td>
                 <td>{{ item.totalNetPrice }}</td>
-                <td>{{ item.vatRatePercent }}%</td>
+				{% if not invoice.headers.isReverseCharge %}
+                	<td>{{ item.vatRatePercent }}%</td>
+				{% endif %}
             </tr>
             {% endfor %}
         </table>
@@ -175,14 +182,20 @@
 					<tr>
 						<td class="cell-label">{{ t.txt_wartosc_netto}}:</td><td> {{ invoice.summary.netValue }}</td>
 					</tr>
+					{% if not invoice.headers.isReverseCharge %}
 					<tr>
 						<td class="cell-label">{{ t.txt_vat_ }}:<td> {{ invoice.summary.vatValue }}</td>
 					</tr>
+					{% endif %}
 					<tr>
 						<td class="cell-label">{{ t.txt_wartosc_brutto}}:</td><td> {{ invoice.summary.grossValue }}</td>
 					</tr>
 					<tr>
-						<td class="cell-label">{{ t.txt_wartosc_faktury_slownie}}:</td><td> {{ invoice.summary.totalInWords }}</td>
+						<td class="cell-label">{{ t.txt_wartosc_faktury_slownie}}:</td><td> {{ invoice.summary.totalInWords }}
+							{% if invoice.summary.totalInWordsAdditionalLang %}
+							<br> {{ invoice.summary.totalInWordsAdditionalLang }}
+							{% endif %}
+						</td>
 					</tr>
 					<tr>
 						<td class="cell-label">{{ t.txt_konto_bankowe}}:</td><td> {{ invoice.headers.bankAccountNumber }}</td>
@@ -191,18 +204,65 @@
 			</table>
         </div>
 
-		{% if invoice.headers.isCorrection %}
-		<div id="correction">
-			<h3>{{ t.txt_przyczyna_korekty}}</h3>
-			<table id="correction-table" class="alternate-colors">
-				<tr>
-					<td>
-				{{ invoice.correction.reason }}
-					</td>
-				</tr>
-			</table>
-		</div>
+		<!-- Export poza UE -->
+		{% if invoice.headers.isExportOutsideEu and invoice.headers.isExportOutsideEu %}
+			<div class="correction">
+				<h3>{{ t.txt_adnotacje_vat }}</h3>
+				<table class="additional-table" class="alternate-colors">
+					<tr>
+						<td>
+					{{ t.txt_odwrotne_obciazenie_description}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+					{{ t.txt_export_towarow_poza_ue }}
+						</td>
+					</tr>
+				</table>
+			</div>
+
+		{% else %}
+			{% if invoice.headers.isExportOutsideEu%}
+			<div class="correction">
+				<h3>{{ t.txt_adnotacja_vat }}</h3>
+				<table class="additional-table" class="alternate-colors">
+					<tr>
+						<td>
+					{{ t.txt_export_towarow_poza_ue }}
+						</td>
+					</tr>
+				</table>
+			</div>
+			{% endif %}
+			<!-- Reverse Charge -->
+			{% if invoice.headers.isReverseCharge%}
+			<div class="correction">
+				<h3>{{ t.txt_adnotacja_vat }}</h3>
+				<table class="additional-table" class="alternate-colors">
+					<tr>
+						<td>
+					{{ t.txt_odwrotne_obciazenie_description}}
+						</td>
+					</tr>
+				</table>
+			</div>
+			{% endif %}
 		{% endif %}
+		
+		<!-- korekta -->
+			{% if invoice.headers.isCorrection %}
+			<div class="correction">
+				<h3>{{ t.txt_przyczyna_korekty}}</h3>
+				<table class="additional-table" class="alternate-colors">
+					<tr>
+						<td>
+					{{ invoice.correction.reason }}
+						</td>
+					</tr>
+				</table>
+			</div>
+			{% endif %}
 
         <footer>
             <p>{{ invoice.footer.note }}</p>
