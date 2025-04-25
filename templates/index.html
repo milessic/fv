@@ -189,6 +189,14 @@
 				<label for="isEnglish">Po angielsku?</label>
 				<input id="isEnglish" type="checkbox">
 			</div>
+			<div class="checkbox-wrapper">
+				<label for="isExportOutsideEu">Export poza UE?</label>
+				<input id="isExportOutsideEu" type="checkbox">
+			</div>
+			<div class="checkbox-wrapper">
+				<label for="isReverseCharge">Odwrotne obciążenie?</label>
+				<input id="isReverseCharge" type="checkbox">
+			</div>
 			<div class="field-wrapper correction-related hidden required">
     	    	<label>Korygowany dokument</label>
     	    	<input type="text" id="correctedDocument">
@@ -253,7 +261,7 @@
     	                <th>Ilość</th>
     	                <th>Jednostka</th>
     	                <th>Cena netto</th>
-    	                <th>VAT %</th>
+    	                <th class="vat-field">VAT %</th>
     	                <th>Usuń</th>
     	            </tr>
     	        </thead>
@@ -293,6 +301,7 @@
 
 	document.getElementById("isCorrection").addEventListener("click", handleCorrection);
 	document.getElementById("paymentMethod").addEventListener("change", handlePaymentMethod);
+	document.getElementById("isReverseCharge").addEventListener("change", handleReverseCharge);
 	document.addEventListener('click', () => {
 		if (!exampleShown){console.log(0);return}
 		console.log(exampleShown)
@@ -341,6 +350,16 @@
 			document.querySelectorAll(".correction-related").forEach( (e) => {e.classList.remove("hidden")});
 		} else{
 			document.querySelectorAll(".correction-related").forEach( (e) => {e.classList.add("hidden")});
+		}
+	}
+	function handleReverseCharge(){
+		const isEnabled = document.getElementById("isReverseCharge").checked;
+		if ( isEnabled ){
+			document.querySelectorAll(".vat-field").forEach( (e) => {e.classList.add("hidden")});
+			document.querySelectorAll(".row-vatRatePercent").forEach( (e) => {e.classList.add("hidden");e.querySelector("input").value = "";});
+		} else{
+			document.querySelectorAll(".vat-field").forEach( (e) => {e.classList.remove("hidden")});
+			document.querySelectorAll(".row-vatRatePercent").forEach( (e) => {e.classList.remove("hidden")});
 		}
 	}
 	
@@ -400,6 +419,8 @@ function populateFieldsFromData(data){
 	fillFieldDueToData(data, "bankAccountNumber", "bankAccountNumber", "headers");
 	// english
 	fillFieldDueToData(data, "lang", "isEnglish", "headers");
+	fillFieldDueToData(data, "isExportOutsideEu", "isExportOutsideEu", "headers");
+	fillFieldDueToData(data, "isReverseCharge", "isReverseCharge", "headers");
 	// recipients - from 
 	fillFieldDueToData(data, "name", "fromName", "recipients", "from");
 	fillFieldDueToData(data, "name2", "fromName2", "recipients", "from");
@@ -438,10 +459,10 @@ function populateFieldsFromData(data){
 			);
 		}
 	}
+	handleReverseCharge();
 }
 
 function gatherData(){
-		const langValue = document.getElementById("isEnglish").value ? "english" : null;
 		const invoiceData = {
 			headers: {
 				isMetodaKasowa: document.getElementById("isMetodaKasowa").checked,
@@ -453,6 +474,8 @@ function gatherData(){
 				paymentMethod: document.getElementById("paymentMethod").value,
 				bankAccountNumber: document.getElementById("bankAccountNumber").value,
 				lang: document.getElementById("isEnglish").checked ? "english" : null,
+				isReverseCharge: document.getElementById("isReverseCharge").checked,
+				isExportOutsideEu: document.getElementById("isExportOutsideEu").checked,
 			},
 			recipients: {
 				from:{
@@ -502,6 +525,28 @@ function gatherData(){
 				vatRatePercent: parseInt(inputs[5].value)
 			});
 		});
+		if ( invoiceData.headers.isReverseCharge ){
+			// check if vat are fullfilled
+			let vatFullfiled = false;
+			const elements = document.querySelectorAll(".vatRatePercent");
+			for ( const e of elements ){
+				console.log(e.value)
+				if ( e.value) { vatFullfiled = true };
+			}
+			if ( vatFullfiled && ! confirm("Stawki VAT zostaną wyczyszczone z powodu zaznaczenia 'Odwrotne obciążenie', kontynuować?")){return}
+			
+			console.log(invoiceData);
+			const newRows = [];
+			for ( const [key, row] of Object.entries(invoiceData.invoiceItems)){
+				row.vatRatePercent = 0;
+				console.log('row', row);
+				continue;
+				const newRow = row;
+				newRow.vatRatePercent = 0;
+				newRows.push(newRow);
+			}
+			//invoiceData.invoiceItems = newRows;
+		}
 		return invoiceData
 }
 async function generatePdf(){
@@ -566,6 +611,8 @@ function validateRequired(){
 	const requiredElements = document.querySelectorAll(".required");
 	let allGood = true;
 	for ( const el of requiredElements ){
+		// reverse Charge
+		if ( isReverseCharge.checked && el.classList.contains("row-vatRatePercent")) { continue }
 		inputEl = el.querySelector("input, textarea");
 		if ( el.classList.contains("hidden") ) { continue }
 		if ( inputEl.value ) { el.classList.remove('error'); continue }
@@ -633,7 +680,7 @@ function validateRequired(){
 				document.getElementById(id).checked = true;
 				return;
 			}
-			if (["isMetodaKasowa","isCorrection"].includes(id)){
+			if (["isMetodaKasowa","isCorrection", "isExportOutsideEu", "isReverseCharge"].includes(id)){
 				document.getElementById(id).checked = val;
 				return;
 			}

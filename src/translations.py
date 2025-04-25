@@ -2,6 +2,7 @@ class Translations:
     def __init__(self, additional_lang:str|None=None):
         self.txt_faktura_vat = "Faktura VAT"
         self.txt_faktura_vat_korygujaca = "Faktura VAT Korygująca"
+        self.txt_odwrotne_obciazenie = "Odwrotne obciążenie"
         self.txt_metoda_kasowa = "Metoda Kasowa"
         self.txt_korygowany_dokument = "Korygowany dokument"
         self.txt_przyczyna_korekty = "Przyczyna korekty"
@@ -28,6 +29,10 @@ class Translations:
         self.txt_upowazniona_osoba = "Upoważniona osoba"
         self.txt_faktura_wymaga_podpisu = "Faktura wymaga podpisu"
         self.txt_faktura_nie_wymaga_podpisu = "Faktura nie wymaga podpisu"
+        self.txt_adnotacja_vat = "Adnotacja VAT"
+        self.txt_adnotacje_vat = "Adnotacje VAT"
+        self.txt_export_towarow_poza_ue = "Eksport towarów poza UE – art. 41 ust. 1 w zw. z art. 83 ust. 1 pkt 6 ustawy o VAT. Zastosowano stawkę 0% VAT."
+        self.txt_odwrotne_obciazenie_description = "Usługa niepodlegająca opodatkowaniu VAT w Polsce – odwrotne obciążenie (reverse charge). Art. 28b ustawy o VAT."
 
         self.__set_additional_lang(additional_lang)
     def __set_additional_lang(self, additional_lang:str|None):
@@ -37,6 +42,7 @@ class Translations:
             case "english":
                 self.txt_faktura_vat = "Faktura VAT / VAT Invoice"
                 self.txt_metoda_kasowa = "Metoda Kasowa / Cash Basis"
+                self.txt_odwrotne_obciazenie = "Odwrotne obciążenie / Reverse charge"
                 self.txt_faktura_vat_korygujaca = "Faktura VAT Korygująca / Correction Invoice VAT"
                 self.txt_korygowany_dokument = "Korygowany dokument / Corrected Document"
                 self.txt_przyczyna_korekty = "Przyczyna korekty / Reason for Correction"
@@ -63,6 +69,10 @@ class Translations:
                 self.txt_upowazniona_osoba = "Upoważniona osoba / Authorized Person"
                 self.txt_faktura_wymaga_podpisu = "Faktura wymaga podpisu / Invoice requires signature"
                 self.txt_faktura_nie_wymaga_podpisu = "Faktura nie wymaga podpisu / Invoice does not require signature"
+                self.txt_adnotacja_vat = "Adnotacja VAT / VAT annotation"
+                self.txt_adnotacje_vat = "Adnotacje VAT / VAT annotations"
+                self.txt_export_towarow_poza_ue = "Eksport towarów poza UE – art. 41 ust. 1 w zw. z art. 83 ust. 1 pkt 6 ustawy o VAT. Zastosowano stawkę 0% VAT.<br><br>Export of goods outside the EU – Article 41(1) in connection with Article 83(1)(6) of the VAT Act. A 0% VAT rate has been applied."
+                self.txt_odwrotne_obciazenie_description = "Usługa niepodlegająca opodatkowaniu VAT w Polsce – odwrotne obciążenie (reverse charge). Art. 28b ustawy o VAT.<br><br>Service not subject to VAT taxation in Poland – reverse charge. Article 28b of the VAT Act."
             case _:
                 raise NotImplementedError(f"Language '{additional_lang}' is not supported!")
 

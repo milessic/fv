@@ -73,7 +73,7 @@ def save_html_to_file(html_content:str, filename:str="invoice.html"):
 def convert_html_to_pdf(html_file, pdf_file):
     pdfkit.from_file(html_file, pdf_file)
 
-def calculate_summary(invoice_data:dict) -> dict:
+def calculate_summary(invoice_data:dict, additional_lang:str|None=None) -> dict:
     invoice_data["summary"]["netValue"] = 0
     invoice_data["summary"]["grossValue"] = 0
     invoice_data["summary"]["vatValue"] = 0
@@ -92,6 +92,8 @@ def calculate_summary(invoice_data:dict) -> dict:
     invoice_data["summary"]["grossValue"] = round_price(invoice_data["summary"]["netValue"] + invoice_data["summary"]["vatValue"])
     invoice_data["summary"]["vatValue"] = round_price(invoice_data["summary"]["vatValue"])
     invoice_data["summary"]["totalInWords"] = get_price_as_words(float(invoice_data["summary"]["grossValue"]), "pl")
+    if additional_lang is not None:
+        invoice_data["summary"]["totalInWordsAdditionalLang"] = get_price_as_words(float(invoice_data["summary"]["grossValue"]), additional_lang)
     invoice_data["summary"]["netValue"] = round_price(invoice_data["summary"]["netValue"])
 
     return invoice_data
@@ -101,7 +103,7 @@ def calculate_summary(invoice_data:dict) -> dict:
 def generate_invoice_pdf_in_memory(invoice_data:dict, console:bool=False, lang:None|str=None):
     print(lang)
     invoice_number = invoice_data["headers"]["invoiceNumber"]
-    invoice_data = calculate_summary(invoice_data)
+    invoice_data = calculate_summary(invoice_data, lang)
 
     if console:
         print_status("Faktura wczytana pomyślnie", console, invoice_number)
