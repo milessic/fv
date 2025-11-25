@@ -79,6 +79,125 @@
 			}
 		}
     </style>
+<style>
+/* Desktop table stays normal */
+table.responsive {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.responsive th,
+table.responsive td {
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+/* Mobile layout */
+@media (max-width: 900px) {
+    table.responsive thead {
+        display: none;
+    }
+
+    table.responsive,
+    table.responsive tbody,
+    table.responsive tr,
+    table.responsive td {
+        display: block;
+        width: 100%;
+    }
+
+    table.responsive tr {
+		margin-left: auto;
+		margin-right: auto;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ddd;
+		max-width: 400px;
+    }
+    table.responsive input,
+    table.responsive textarea {
+		max-width: 300px;
+	}
+
+	/* Alternating row colors still apply */
+    table.responsive tbody tr:nth-child(odd)
+	{
+        background: #d6d6ff;
+    }
+    table.responsive tbody tr:nth-child(even)
+	{
+        background: #b0f0f9;
+    }
+	/* Reset colr for td */
+	td {
+		background: #ffffff00;
+		margin-left: 15px;
+		max-width: 470px;
+	}
+	td * {
+		margin: 10px;
+	}
+
+    table.responsive td {
+        border: none;
+        padding-left: 0;
+        margin-bottom: 0px;
+		padding: 0px;
+        font-size: 16px;
+    }
+
+    table.responsive td::before {
+        content: attr(data-label) ":";
+        display: block;
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
+	/* Inline rows */
+	.row-index,
+	.row-quantity,
+	.row-unit,
+	.row-vatRatePercent,
+	.row-remove
+	{
+		display: flex !important;
+	}
+	.row-index:before,
+	.row-quantity:before,
+	.row-unit:before,
+	.row-vatRatePercent:before,
+	.row-remove:before
+	{
+		margin-bottom: auto !important;
+		margin-top: auto !important;
+	}
+
+	.row-index, .row-remove {
+		background: #ececff !important;
+		color: black;
+		max-width: 300px !important;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.row-index:before {
+		color: black;
+		content: attr(data-label) "" !important;
+		margin-right: 5px;
+		font-size: large;
+	}
+	.row-remove:before {
+		margin-left: auto;
+	}
+	.row-remove button {
+		margin-right: 15px;
+	}
+
+	/* header for mobile */
+	#header-container {
+		display: block;
+	}
+
+}
+</style>
 </head>
 <body>
 	<div id="top-nav">
@@ -252,7 +371,7 @@
 		<div class="wide-container">
     	    <h3>Pozycje faktury</h3>
 			<div id="positions-container">
-    	    <table>
+    	    <table class="responsive">
     	        <thead>
     	            <tr>
     	                <th>#</th>
@@ -375,14 +494,14 @@
 		const row = table.insertRow();
 		row.classList.add("row");
 		row.innerHTML = `
-			<td class="row-index"></td>
-			<td class="row-item-description required"><textarea type="text" class="itemDescription">${itemDescription}</textarea></td>
-			<td><input type="text" class="pkwiuCode" value="${pkwiuCode}"></td>
-			<td class="row-quantity required"><input type="number" class="quantity" value="1" min="0" value="${quantity}"></td>
-			<td class="row-unit required"><input type="text" class="unit" value="${unit}"></td>
-			<td class="row-unit-price required"><input type="number" class="unitNetPrice" step="0.01" min="0" value="${unitNetPrice}"></td>
-			<td class="row-vatRatePercent required"><input type="number" class="vatRatePercent" value="23" min="0" value="${vatRatePercent}"></td>
-			<td class="row-remove"><button class="btn-remove" onclick="removeItem(this)">❌</button></td>
+			<td class="row-index" data-label="#"></td>
+			<td class="row-item-description required" data-label="Nazwa"><textarea type="text" class="itemDescription">${itemDescription}</textarea></td>
+			<td data-label="PKWiU"><input type="text" class="pkwiuCode" value="${pkwiuCode}"></td>
+			<td data-label="Ilość" class="row-quantity required"><input type="number" class="quantity" value="1" min="0" value="${quantity}"></td>
+			<td data-label="Jednostka" class="row-unit required"><input type="text" class="unit" value="${unit}"></td>
+			<td data-label="Cena netto" class="row-unit-price required"><input type="number" class="unitNetPrice" step="0.01" min="0" value="${unitNetPrice}"></td>
+			<td data-label="VAT %" class="row-vatRatePercent required"><input type="number" class="vatRatePercent" value="23" min="0" value="${vatRatePercent}"></td>
+			<td data-label="Usuń pozycję" class="row-remove"><button class="btn-remove" onclick="removeItem(this)">❌</button></td>
 		`;
 		setRowIndexes();
 
