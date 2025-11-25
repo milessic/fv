@@ -497,9 +497,9 @@ table.responsive td {
 			<td class="row-index" data-label="#"></td>
 			<td class="row-item-description required" data-label="Nazwa"><textarea type="text" class="itemDescription">${itemDescription}</textarea></td>
 			<td data-label="PKWiU"><input type="text" class="pkwiuCode" value="${pkwiuCode}"></td>
-			<td data-label="Ilość" class="row-quantity required"><input type="number" class="quantity" value="1" min="0" value="${quantity}"></td>
+			<td data-label="Ilość" class="row-quantity required"><input type="number" class="quantity" value="1" min="0" value="${quantity}" pattern="^[0-9]+([.,][0-9]+)?$"></td>
 			<td data-label="Jednostka" class="row-unit required"><input type="text" class="unit" value="${unit}"></td>
-			<td data-label="Cena netto" class="row-unit-price required"><input type="number" class="unitNetPrice" step="0.01" min="0" value="${unitNetPrice}"></td>
+			<td data-label="Cena netto" class="row-unit-price required"><input type="number" class="unitNetPrice" step="0.01" min="0" value="${unitNetPrice}" pattern="^[0-9]+([.,][0-9]+)?$"></td>
 			<td data-label="VAT %" class="row-vatRatePercent required"><input type="number" class="vatRatePercent" value="23" min="0" value="${vatRatePercent}"></td>
 			<td data-label="Usuń pozycję" class="row-remove"><button class="btn-remove" onclick="removeItem(this)">❌</button></td>
 		`;
